@@ -1,4 +1,5 @@
 # pandas library is used to read the excel file
+import argparse
 import logging
 import logging.config
 from configs.configs import GMAIL_CONFIGS
@@ -26,7 +27,7 @@ def read_student_records():
 
 config = GMAIL_CONFIGS
 
-def send_email():
+def send_email(student_email_received,student_result):
     # Email configuration
     sender_email = config['login']['sender_email']
     receiver_email = student_email
@@ -65,9 +66,9 @@ def get_student_grades(df_student):
     return student_grades
 
 
-def student_email():
+def student_email(student_email_args):
     #request student email to send the result
-    student_email = input("Enter student email address: ")
+    student_email = student_email_args
     student_email = student_email.casefold() #this will convert email address to lowercase
     email_regex = re.compile(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$')
     while not re.match(email_regex,student_email):
@@ -77,10 +78,11 @@ def student_email():
 
 
 #colleect and store student id
-def get_student_id_input(student_grades_extracted):
+def get_student_id_input(student_grades_extracted, student_id):
     #request student id to pull record
     check_studentid ="-"
-    student_response = input("Enter your student id(e.g s****): ")
+    student_response = student_id
+    # student_response = input("Enter your student id(e.g s****): ")
     check_studentid = student_response.casefold()
     while check_studentid not in student_grades_extracted.keys():
         logger.error(f'Student id - {student_response}, not found')
@@ -103,34 +105,37 @@ def get_student_result(student_input_received,student_grades_extracted):
             \n Chemistry - {4}'.format(student_grades_extracted[student_input_received][0],\
             student_grades_extracted[student_input_received][1],student_grades_extracted[student_input_received][2],\
                 student_grades_extracted[student_input_received][3],student_grades_extracted[student_input_received][4])
-
+        
         return result
 
 
-
-#extract excel file to datafram
-df_student = read_student_records()
-# Extract student grades into dictionary
-student_grades_extracted = get_student_grades(df_student)
-student_input_received = get_student_id_input(student_grades_extracted)
-student_result = get_student_result(student_input_received,student_grades_extracted)
-student_email_received = student_email()
-
- #save a copy of result as .txt file 
-with open('result.txt','w') as res:
-    res.write(student_result)
-    #send email
-send_email()
-
-    #print result to terminal
-print("\n --------- Student Record -----------\n")
-print(student_result)
-print("\n------------------------------------")
     
+def main():
+
+    parser = argparse.ArgumentParser(description='Student Result Application')
+    parser.add_argument('student_id', help='Enter student id')
+    parser.add_argument('email', help='Send result via email')
+    args = parser.parse_args()
+
+    df_student = read_student_records()
+# Extract student grades into dictionary
+    student_grades_extracted = get_student_grades(df_student)
+    student_input_received = get_student_id_input(student_grades_extracted,args.student_id)
+    student_result = get_student_result(student_input_received,student_grades_extracted)
+    student_email_received = student_email(args.email)
+    send_email(student_email_received,student_result)
+    print("Result has been processed successfully, please check email")
+    logger.info("Email sent to student ")
+
+if __name__ == "__main__":
+    main()
 
 
 
-
+# parser = argparse.ArgumentParser(description='Student Result Application')
+# parser.add_argument('email', help='Send result via email')
+# args = parser.parse_args()
+# print(args.email)
 
 
 #TO DO
