@@ -1,4 +1,5 @@
 # pandas library is used to read the excel file
+import sqlite3
 import argparse
 import logging
 import logging.config
@@ -7,26 +8,32 @@ import re
 import smtplib
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
-import pandas as pd
+import os.path
+
+
+
+#credentials for gmail 
+config = GMAIL_CONFIGS
+db_conn = DB_CONFIGS
 
 logging.config.fileConfig('configs/logger.conf')
 logger = logging.getLogger('student_app')
 
-def read_student_records():
-    try:
-    # pass the excel location to dataframe
-        df = pd.read_excel("student_record.xlsx") 
-        print()
-        print('***************************************')
-        print('Student Result Application') 
-        print('***************************************')  
-        return df
-    except FileNotFoundError:
-        logger.error("student_record.xlsx file not found")
-        print("File not Found")
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+db_path = os.path.join(BASE_DIR, db_conn.sqlite.db)
 
-
-config = GMAIL_CONFIGS
+def get_student_grades():
+        with sqlite3.connect(db_path) as db:
+            cur =db.cursor()
+            df_student = cur.execute('select * from student_result')
+            logger.info('Open database successful')
+            student_grades = {}
+            for val in df_student:
+                student_id,name,math,english, physics,chemistry = val
+                student_grades[student_id]= [name,math,english, physics,chemistry]
+            print(student_grades)
+            return student_grades
+   
 
 def send_email(student_email_received,student_result):
     # Email configuration
@@ -53,18 +60,6 @@ def send_email(student_email_received,student_result):
     server.sendmail(sender_email, student_email_received, msg.as_string())
     server.quit()
     logger.info(f'Email sent to - {student_email_received}')
-
-
-#extract dataframe to dictionary
-def get_student_grades(df_student):
-    student_grades = {}
-    # unpack the content of df
-    for val in df_student.values:
-        #convert val to tuple data type
-        student_id,name,math,english, physics,chemistry = val
-        #store record in dictionary data type
-        student_grades[student_id]= [name,math,english, physics,chemistry]
-    return student_grades
 
 
 def student_email(student_email_args):
@@ -118,16 +113,19 @@ def main():
     parser.add_argument('email', help='Send result via email')
     args = parser.parse_args()
 
-    df_student = read_student_records()
     # Extract student grades into dictionary
-    student_grades_extracted = get_student_grades(df_student)
-
+    student_grades_extracted = get_student_grades()
+    
+    #store student id from args parser
     student_input_received = get_student_id_input(student_grades_extracted,args.student_id)
 
+    #store student result based on the id slected
     student_result = get_student_result(student_input_received,student_grades_extracted)
 
+    #store student id from args parser
     student_email_received = student_email(args.email)
 
+    #send student email
     send_email(student_email_received,student_result)
 
     print("Result has been processed successfully, please check email")
