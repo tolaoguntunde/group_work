@@ -74,6 +74,10 @@ def student_email(student_email_args):
     while not re.match(email_regex,student_email):
         logger.error(f'Wrong email entered - {student_email}')
         student_email = input("Email incorrect, please check email and try again: ")
+        if student_email == 'q':
+            print("Application exiting ...")
+            logger.info('User quitt application')
+            break
     return student_email
 
 
@@ -82,15 +86,18 @@ def get_student_id_input(student_grades_extracted, student_id):
     #request student id to pull record
     check_studentid ="-"
     student_response = student_id
-    # student_response = input("Enter your student id(e.g s****): ")
     check_studentid = student_response.casefold()
     while check_studentid not in student_grades_extracted.keys():
         logger.error(f'Student id - {student_response}, not found')
         student_response = input("Student record not found for studentid {}, please check studentid and try again: ".format(student_response))
         student_response = student_response.casefold()
+        if student_response == 'q':
+            print("Application exiting ...")
+            logger.info('User quitt application')
+            break
         check_studentid = student_response
+        
     return student_response
-
 
 
 def get_student_result(student_input_received,student_grades_extracted):
@@ -121,19 +128,21 @@ def main():
     
     #store student id from args parser
     student_input_received = get_student_id_input(student_grades_extracted,args.student_id)
-    print(student_input_received)
+    if student_input_received != 'q':
+        student_result = get_student_result(student_input_received,student_grades_extracted)
+        student_email_received = student_email(args.email)
     #store student result based on the id slected
-    student_result = get_student_result(student_input_received,student_grades_extracted)
-    print (student_result)
+
     #store student id from args parser
-    student_email_received = student_email(args.email)
-    print(student_email_received)
     #send student email
-    send_email(student_email_received,student_result)
+        if student_email_received != 'q':
+            send_email(student_email_received,student_result)
+            print("***********************************************************************")
+            print("----- Result has been processed successfully, please check email -----")
+            print("***********************************************************************")
 
-    print("Result has been processed successfully, please check email")
-
-    logger.info("Email sent to student ")
+            logger.info("Email sent to student ")
+        
 
 
 if __name__ == "__main__":
