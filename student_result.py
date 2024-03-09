@@ -22,6 +22,7 @@ def read_student_records():
         print('***************************************')  
         return df
     except FileNotFoundError:
+        logger.error("student_record.xlsx file not found")
         print("File not Found")
 
 
@@ -111,21 +112,28 @@ def get_student_result(student_input_received,student_grades_extracted):
 
     
 def main():
-
+    #setup argument parse
     parser = argparse.ArgumentParser(description='Student Result Application')
     parser.add_argument('student_id', help='Enter student id')
     parser.add_argument('email', help='Send result via email')
     args = parser.parse_args()
 
     df_student = read_student_records()
-# Extract student grades into dictionary
+    # Extract student grades into dictionary
     student_grades_extracted = get_student_grades(df_student)
+
     student_input_received = get_student_id_input(student_grades_extracted,args.student_id)
+
     student_result = get_student_result(student_input_received,student_grades_extracted)
+
     student_email_received = student_email(args.email)
+
     send_email(student_email_received,student_result)
+
     print("Result has been processed successfully, please check email")
+
     logger.info("Email sent to student ")
+
 
 if __name__ == "__main__":
     main()
