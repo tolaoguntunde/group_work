@@ -42,7 +42,7 @@ def get_student_grades():
 def send_email(student_email_received,student_result):
     # Email configuration
     sender_email = config['login']['sender_email']
-    receiver_email = student_email
+    receiver_email = student_email_received
     password = config['login']['password']
 
     # Create message container
@@ -122,13 +122,13 @@ def main():
     
     #store student id from args parser
     student_input_received = get_student_id_input(student_grades_extracted,args.student_id)
-
+    print(student_input_received)
     #store student result based on the id slected
     student_result = get_student_result(student_input_received,student_grades_extracted)
-
+    print (student_result)
     #store student id from args parser
     student_email_received = student_email(args.email)
-
+    print(student_email_received)
     #send student email
     send_email(student_email_received,student_result)
 
