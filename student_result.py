@@ -29,10 +29,13 @@ def get_student_grades():
             df_student = cur.execute('select * from student_result')
             logger.info('Open database successful')
             student_grades = {}
+            record_count = 0 
             for val in df_student:
                 student_id,name,math,english, physics,chemistry = val
                 student_grades[student_id]= [name,math,english, physics,chemistry]
-            print(student_grades)
+                record_count = record_count+1
+            print("This database only have {} student(s)".format(record_count))
+        
             return student_grades
    
 
