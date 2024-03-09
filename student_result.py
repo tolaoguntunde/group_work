@@ -90,7 +90,6 @@ def get_student_id_input(student_grades_extracted, student_id):
         student_response = student_response.casefold()
         check_studentid = student_response
     return student_response
-    student_email()
 
 
 
