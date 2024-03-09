@@ -4,6 +4,7 @@ import argparse
 import logging
 import logging.config
 from configs.configs import GMAIL_CONFIGS
+from configs.configs import DB_CONFIGS
 import re
 import smtplib
 from email.mime.multipart import MIMEMultipart
@@ -20,7 +21,7 @@ logging.config.fileConfig('configs/logger.conf')
 logger = logging.getLogger('student_app')
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-db_path = os.path.join(BASE_DIR, db_conn.sqlite.db)
+db_path = os.path.join(BASE_DIR, db_conn['sqlite']['db'])
 
 def get_student_grades():
         with sqlite3.connect(db_path) as db:
@@ -135,25 +136,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
-
-
-# parser = argparse.ArgumentParser(description='Student Result Application')
-# parser.add_argument('email', help='Send result via email')
-# args = parser.parse_args()
-# print(args.email)
-
-
-#TO DO
-#Update code such that if wrong student id is entered, prompt user for another student id
-#Refactor to use function where possible
-#Import library that would allow connection to email: Connect to gmail or other email account to send the result
-#Are we sending the result as an attachment or should it go in the body of the email
-# use argument parse
-# add security
-# add logging
-# transistion to database
-# input checks and email validation; pattern matching
-# admin portal
-# use more functions
-
