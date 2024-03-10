@@ -34,8 +34,8 @@ def get_student_grades():
                 student_id,name,math,english, physics,chemistry = val
                 student_grades[student_id]= [name,math,english, physics,chemistry]
                 record_count = record_count+1
-            print("This database only have {} student(s)".format(record_count))
-        
+            print("This database only have {} student(s)".format(record_count)) # to be removed after database has been updated
+         
             return student_grades
    
 
@@ -73,7 +73,7 @@ def student_email(student_email_args):
     email_regex = re.compile(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$')
     while not re.match(email_regex,student_email):
         logger.error(f'Wrong email entered - {student_email}')
-        student_email = input("Email incorrect, please check email and try again: ")
+        student_email = input("Email incorrect, please check email and try again or press 'q' to exit: ")
         if student_email == 'q':
             print("Application exiting ...")
             logger.info('User quitt application')
@@ -89,7 +89,7 @@ def get_student_id_input(student_grades_extracted, student_id):
     check_studentid = student_response.casefold()
     while check_studentid not in student_grades_extracted.keys():
         logger.error(f'Student id - {student_response}, not found')
-        student_response = input("Student record not found for studentid {}, please check studentid and try again: ".format(student_response))
+        student_response = input("Student record not found for studentid {}, please check the student id and try again or press 'q' to exit: ".format(student_response))
         student_response = student_response.casefold()
         if student_response == 'q':
             print("Application exiting ...")
