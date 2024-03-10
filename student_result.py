@@ -13,7 +13,7 @@ import os.path
 # Rest-api
 import requests
 import random
-from prettytable import PrettyTable
+# from prettytable import PrettyTable
 
 
 config = GMAIL_CONFIGS
@@ -38,9 +38,12 @@ def get_random_quote():
         random_quote = random.choice(data)
         # Extract text and author from the selected quote
         quote_text = random_quote["text"]
-        quote_author = random_quote["author"].split(",", 1)[0] if random_quote["author"] else "Unknown"
+        # quote_author = random_quote["author"].split(",", 1)[0] if random_quote["author"] else "Unknown"
+        quote_author = random_quote["author"].split(",")
+        quote_author = quote_author[0]
+        quote_author = quote_author if random_quote["author"] else "Unknown"
         # Return the random quote
-        # return f"<i>\"{quote_text}\"</i> - {quote_author}"
+        
         return f"\"{quote_text}\" - {quote_author}"
     else:
         # Print an error message if the request was unsuccessful
@@ -136,7 +139,7 @@ def get_student_result(student_input_received,student_grades_extracted):
             student_grades_extracted[student_input_received][1],student_grades_extracted[student_input_received][2],\
                 student_grades_extracted[student_input_received][3],student_grades_extracted[student_input_received][4],get_random_quote()
                 )
-        # print(result)
+        print(result)
         return result
 
 
@@ -165,7 +168,7 @@ def main():
     #send student email
         if student_email_received != 'q':
             send_email(student_email_received,student_result)
-            print("***********************************************************************")
+            print("\n***********************************************************************")
             print("----- Result has been processed successfully, please check email -----")
             print("***********************************************************************")
 
