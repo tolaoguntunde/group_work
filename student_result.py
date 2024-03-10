@@ -11,6 +11,32 @@ from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 import os.path
 
+# Rest-api
+import requests
+import random
+
+def get_random_quote():
+    # Send a GET request to the API endpoint
+    response = requests.get("https://type.fit/api/quotes")
+
+    # Check if the request was successful (status code 200)
+    if response.status_code == 200:
+        # Parse JSON response
+        data = response.json()
+        # Select a random quote from the list
+        random_quote = random.choice(data)
+        # Extract text and author from the selected quote
+        quote_text = random_quote["text"]
+        quote_author = random_quote["author"] if random_quote["author"] else "Unknown"
+        # Print the random quote
+        print(f"\"{quote_text}\" - {quote_author}")
+    else:
+        # Print an error message if the request was unsuccessful
+        print("Failed to fetch data from the API.")
+
+# Call the function to get and print a random quote
+
+random_quote = str(get_random_quote())
 
 
 #credentials for gmail 
@@ -34,8 +60,7 @@ def get_student_grades():
                 student_id,name,math,english, physics,chemistry = val
                 student_grades[student_id]= [name,math,english, physics,chemistry]
                 record_count = record_count+1
-            print("This database only have {} student(s)".format(record_count)) # to be removed after database has been updated
-         
+            # print("This database only have {} student(s)".format(record_count)) 
             return student_grades
    
 
@@ -52,7 +77,7 @@ def send_email(student_email_received,student_result):
     msg['Subject'] = 'Student Result Now Available'
 
     # Attach student result to the email body
-    body = student_result
+    body = student_result 
     msg.attach(MIMEText(body, 'plain'))
 
     # Connect to Gmail's SMTP server
@@ -81,7 +106,7 @@ def student_email(student_email_args):
     return student_email
 
 
-#colleect and store student id
+#collect and store student id
 def get_student_id_input(student_grades_extracted, student_id):
     #request student id to pull record
     check_studentid ="-"
@@ -93,7 +118,7 @@ def get_student_id_input(student_grades_extracted, student_id):
         student_response = student_response.casefold()
         if student_response == 'q':
             print("Application exiting ...")
-            logger.info('User quitt application')
+            logger.info('User quit application')
             break
         check_studentid = student_response
         
@@ -108,10 +133,12 @@ def get_student_result(student_input_received,student_grades_extracted):
             \n Mathematics - {1} \
             \n English - {2} \
             \n Physics - {3} \
-            \n Chemistry - {4}'.format(student_grades_extracted[student_input_received][0],\
+            \n Chemistry - {4} \
+             \n\nQuote: {5}'.format(student_grades_extracted[student_input_received][0],\
             student_grades_extracted[student_input_received][1],student_grades_extracted[student_input_received][2],\
-                student_grades_extracted[student_input_received][3],student_grades_extracted[student_input_received][4])
-        
+                student_grades_extracted[student_input_received][3],student_grades_extracted[student_input_received][4],random_quote 
+                )
+        # print(result)
         return result
 
 
