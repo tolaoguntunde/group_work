@@ -27,26 +27,15 @@ def get_random_quote():
         random_quote = random.choice(data)
         # Extract text and author from the selected quote
         quote_text = random_quote["text"]
-        quote_author = random_quote["author"] if random_quote["author"] else "Unknown"
-        # Print the random quote
-        print(f"\"{quote_text}\" - {quote_author}")
+        quote_author = random_quote["author"].split(",", 1)[0] if random_quote["author"] else "Unknown"
+        # Return the random quote
+        # return f"<i>\"{quote_text}\"</i> - {quote_author}"
+        return f"\"{quote_text}\" - {quote_author}"
     else:
         # Print an error message if the request was unsuccessful
         print("Failed to fetch data from the API.")
 
-# Call the function to get and print a random quote
 
-random_quote = str(get_random_quote())
-# n = None
-# print("Before Converting:", type(n))
- 
-# if n is None:
-#     n = ""
-     
-# print("Converting None into String:", type(n))
-
-
-#credentials for gmail 
 config = GMAIL_CONFIGS
 db_conn = DB_CONFIGS
 
@@ -143,7 +132,7 @@ def get_student_result(student_input_received,student_grades_extracted):
             \n Chemistry - {4} \
              \n\nQuote: {5}'.format(student_grades_extracted[student_input_received][0],\
             student_grades_extracted[student_input_received][1],student_grades_extracted[student_input_received][2],\
-                student_grades_extracted[student_input_received][3],student_grades_extracted[student_input_received][4],random_quote 
+                student_grades_extracted[student_input_received][3],student_grades_extracted[student_input_received][4],get_random_quote()
                 )
         # print(result)
         return result
