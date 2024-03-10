@@ -119,8 +119,8 @@ def get_student_result(student_input_received,student_grades_extracted):
 def main():
     #setup argument parse
     parser = argparse.ArgumentParser(description='Student Result Application')
-    parser.add_argument('student_id', help='Enter student id')
-    parser.add_argument('email', help='Send result via email')
+    parser.add_argument('student_id', help='Enter student id to generate result')
+    parser.add_argument('email', help='Enter email address to get result via email')
     args = parser.parse_args()
 
     # Extract student grades into dictionary
