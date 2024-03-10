@@ -10,10 +10,21 @@ import smtplib
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 import os.path
-
 # Rest-api
 import requests
 import random
+from prettytable import PrettyTable
+
+
+config = GMAIL_CONFIGS
+db_conn = DB_CONFIGS
+
+logging.config.fileConfig('configs/logger.conf')
+logger = logging.getLogger('student_app')
+
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+db_path = os.path.join(BASE_DIR, db_conn['sqlite']['db'])
+
 
 def get_random_quote():
     # Send a GET request to the API endpoint
@@ -35,15 +46,6 @@ def get_random_quote():
         # Print an error message if the request was unsuccessful
         print("Failed to fetch data from the API.")
 
-
-config = GMAIL_CONFIGS
-db_conn = DB_CONFIGS
-
-logging.config.fileConfig('configs/logger.conf')
-logger = logging.getLogger('student_app')
-
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-db_path = os.path.join(BASE_DIR, db_conn['sqlite']['db'])
 
 def get_student_grades():
         with sqlite3.connect(db_path) as db:
@@ -136,6 +138,9 @@ def get_student_result(student_input_received,student_grades_extracted):
                 )
         # print(result)
         return result
+
+
+
 
 
     
